@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    position: relative;
 }
 
 body {
@@ -21,7 +22,39 @@ body {
 .mid {
     width: 100%;
     height: 75%;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#startGame {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+}
+
+.game-board {
+    display: none;
+    width: 350px;
+    height: 350px;
+    background-color: gray;
+}
+
+.board-cell {
+    border: 1px solid red;
+}
+
+.modal {
+    visibility: hidden;
 }
 
 .footer {
