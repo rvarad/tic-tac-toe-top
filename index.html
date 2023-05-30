@@ -7,17 +7,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="./style.css">
+    <script src="./script.js" defer></script>
 </head>
 
 <body>
     <div class="header">TIC TAC TOE</div>
     <div class="mid">
+        <div class="opponent">player1 vs player2</div>
         <div class="turn">Your turn</div>
-        <div class="game-board"></div>
+        <div class="main">
+            <div class="player-info" id="player1Info">
+                <form action="#">
+                    <div class="data-input">
+                        <label for="player1NameInput">Player 1 Name</label>
+                        <input type="text" name="player1 name" id="player1NameInput" placeholder="Enter your name" required>
+                    </div>
+                    <div class="data-input">
+                        <label for="player1SymbolInput">Player 1 Symbol</label>
+                        <input type="text" name="player1 symbol" id="player1SymbolInput"
+                            placeholder="Enter your symbol" required>
+                    </div>
+                    <button type="submit" id="player1Submit" class="submit-player">Submit player 1</button>
+                </form>
+            </div>
+            <button class="start-game" id="startGame">Start Game</button>
+            <div class="game-board"></div>
+            <div class="player-info" id="player2Info">
+                <form action="#">
+                    <div class="data-input">
+                        <label for="player2NameInput">Player 2 Name</label>
+                        <input type="text" name="player2 name" id="player2NameInput" placeholder="Enter your name" required>
+                    </div>
+                    <div class="data-input">
+                        <label for="player2SymbolInput">Player 2 Symbol</label>
+                        <input type="text" name="player2 symbol" id="player2SymbolInput" placeholder="Enter your symbol" required>
+                    </div>
+                    <button type="submit" id="player2Submit" class="submit-player">Submit player 2</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal">
+        <button id="replay"><h1>Play Again</h1></button>
+        <button id="quit"><h1>Quit</h1></button>
     </div>
     <div class="footer">
-        <span class="credits">Brought to you by :
-            <a href="https://github.com/rvarad" target="_blank">rvarad</a> | <a href="https://github.com/rvarad/" target="_blank">Source</a>
+        <span class="credits">
+            Brought to you by : <a href="https://github.com/rvarad" target="_blank">rvarad</a> | <a
+                href="https://github.com/rvarad/" target="_blank">Source</a>
         </span>
     </div>
 </body>
