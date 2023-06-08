@@ -1,18 +1,23 @@
-const DEFAULTTURN = "xPlayer";
-let turn = "";
+"use strict"
+// let turn = "";
 let player1;
 let player2;
 
 let player1NameInput = document.querySelector('#player1NameInput');
 let player1SymbolInput = document.querySelector('#player1SymbolInput');
 let player1Submit = document.querySelector('#player1Submit');
+let player2NameInput = document.querySelector('#player2NameInput');
+let player2SymbolInput = document.querySelector('#player2SymbolInput');
+let player2Submit = document.querySelector('#player2Submit');
+let startGameBtn = document.querySelector('#startGame');
+let gameBoard = document.querySelector('.game-board');
 
 player1Submit.addEventListener('click', () => {
 	event.preventDefault();
-	if (player1NameInput.value && player1SymbolInput.value) {		
-		game.players[0] = player(player1NameInput.value, player1SymbolInput.value);
+	if (player1NameInput.value && player1SymbolInput.value) {
+		gameControl.players[0] = Player(player1NameInput.value, player1SymbolInput.value);
 	}
-	player1 = game.players[0];
+	player1 = gameControl.players[0];
 	if (player1 && player2) {
 		startGameBtn.style.display = 'inline-block';
 		player1NameInput.disabled = true;
@@ -23,16 +28,13 @@ player1Submit.addEventListener('click', () => {
 		player2Submit.style.display = 'none';
 	}
 })
-let player2NameInput = document.querySelector('#player2NameInput');
-let player2SymbolInput = document.querySelector('#player2SymbolInput');
-let player2Submit = document.querySelector('#player2Submit');
 
 player2Submit.addEventListener('click', () => {
 	event.preventDefault();
 	if (player2NameInput.value && player2SymbolInput.value) {
-		game.players[1] = player(player2NameInput.value, player2SymbolInput.value);
+		gameControl.players[1] = Player(player2NameInput.value, player2SymbolInput.value);
 	}
-	player2 = game.players[1];
+	player2 = gameControl.players[1];
 	if (player1 && player2) {
 		startGameBtn.style.display = 'inline-block';
 		player1NameInput.disabled = true;
@@ -44,24 +46,42 @@ player2Submit.addEventListener('click', () => {
 	}
 })
 
-let startGameBtn = document.querySelector('#startGame');
-
 startGameBtn.addEventListener('click', () => {
 	if (!(gameBoard.innerHTML)) {
-		game.generateBoard();
-		game.turns = 0;
-		game.gameArray = ["", "", "",
-						  "", "", "",
-						  "", "", ""];
+		boardControl.generateBoard();
 		startGameBtn.style.display = 'none';
 		gameBoard.style.zIndex = '1';
 	}
 });
 
-let gameBoard = document.querySelector('.game-board');
+gameBoard.addEventListener('click', (e) => {
+	if (e.target.classList.contains('empty')) {
+		e.target.innerText = boardControl.getSymbol();
+		e.target.classList.remove('empty');
+		e.target.classList.add('filled');
+		boardControl.setGameArray(Number(e.target.getAttribute('gameArray-index')));
+		if (gameControl.getTurns() > 3) {
+			let winner = gameControl.checkWinner()
+			if (winner) {
+				console.log(winner + 'wins');
+				return;
+			} else {
+				console.log('continue');
+			};
+		}
+		gameControl.incrementTurns();
+	};
+});
 
-const game = (() => {
-	const generateBoard = function () {
+const Player = (name, symbol) => {
+	let playerName = name;
+	let playerSymbol = symbol;
+	return { playerName, playerSymbol }
+};
+
+const boardControl = (() => {
+	let gameArray = ["", "", "", "", "", "", "", "", ""];
+	const generateBoard = () => {
 		gameBoard.style.display = 'grid';
 		gameBoard.style.gridTemplateRows = 'repeat(3, 1fr)';
 		gameBoard.style.gridTemplateColumns = 'repeat(3, 1fr)';
@@ -70,78 +90,65 @@ const game = (() => {
 			gameBoard.appendChild(boardCell);
 			boardCell.classList.add('board-cell');
 			boardCell.classList.add('empty');
-			boardCell.setAttribute("id", `c${i}`);
 			boardCell.setAttribute("gameArray-index", `${i - 1}`);
-		}
+		};
+	};
+	const getSymbol = () => {
+		return gameControl.currentPlayer().playerSymbol;
 	}
-	let turns;
-	let gameArray;
-	let players = [];
-	let winningSetArray = [[0, 1, 2], [3, 4, 5],
-						   [6, 7, 8], [0, 3, 6],
-						   [1, 4, 7], [2, 5, 8],
-						   [0, 4, 8], [2, 4, 6]];
-	const checkWinner = function (player) {
-		return (winningSetArray.some((combination) => {
-			return (combination.every((index) => {
-				return (game.gameArray[index] === player.playerSymbol);
-			}))
-		}));
+	const setGameArray = (index) => {
+		gameArray[index] = String((document.querySelectorAll('.board-cell'))[index].textContent);
+	};
+	const getGameArray = () => {
+		return gameArray;
+	};
+	const resetBoard = () => {
+		document.querySelectorAll('.board-cell').forEach((cell) => {
+			cell.textContent = "";
+			cell.classList.add('empty');
+			cell.classList.remove('filled');
+			turns = 0;
+		})
+		for (let i = 0; i < gameArray.length; i++) {
+			setGameArray(i);
+		};
 	}
-	return { generateBoard, turns, gameArray , players, checkWinner};
+	return { generateBoard, getSymbol, setGameArray, getGameArray, resetBoard }
 })();
 
-function player(name, symbol) {
-	let playerName = name;
-	let playerSymbol = symbol;
-	let playerArray = [];
-	return { playerName, playerSymbol, playerArray }
-}
-
-
-const addSymbol = () => {
-	let playerTurn = checkTurn();
-	if (playerTurn === 'player1') {
-		// console.log(playerTurn);
-		return player1.playerSymbol;
-	} else if (playerTurn === 'player2') {
-		// console.log(playerTurn);
-		return player2.playerSymbol;
+const gameControl = (() => {
+	let turns = 0;
+	let players = [];
+	const winningSetArray = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6]
+	];
+	const getTurns = () => {
+		return turns;
 	}
-}
-
-gameBoard.addEventListener('click', (e) => {
-	if (e.target.classList.contains('empty')) {
-		e.target.innerText = addSymbol();
-		e.target.classList.remove('empty');
-		e.target.classList.add('filled');
-		game.gameArray[Number(e.target.getAttribute('gameArray-index'))] = e.target.innerText;
-		game.turns++;
-		player1.playerArray = game.gameArray.map((e,i) => e === player1.playerSymbol ? i : '').filter(String);
-		player2.playerArray = game.gameArray.map((e,i) => e === player2.playerSymbol ? i : '').filter(String);
+	const incrementTurns = () => {
+		turns = turns + 1;
+	};
+	const currentPlayer = () => {
+		return turns % 2 === 0 ? player1 : player2
 	}
-	if (game.turns > 4) {
-		if (game.checkWinner(player1)) {
-			console.log('player 1 wins');
-			return;
-		} else if (game.checkWinner(player2)) {
-			console.log('player 2 wins');
-			return;
+	const checkWinner = () => {
+		let outcome = (winningSetArray.some((combination) => {
+			return (combination.every((index) => {
+				return (boardControl.getGameArray()[index] === currentPlayer().playerSymbol);
+			}));
+		}));
+		if (outcome) {
+			return (currentPlayer());
 		} else {
-			console.log('continue')
-		}
+			return false;
+		};
 	}
-});
-
-function checkTurn() {
-	if (game.turns % 2 === 0) {
-		return ('player1');
-	} else {
-		return ('player2');
-	}
-};
-
-// function checkWinner () {
-	// player1.getPlayerArray() = [];
-	// player2.getPlayerArray() = [];
-// }
+	return { players, getTurns, incrementTurns, currentPlayer, checkWinner }
+})();
