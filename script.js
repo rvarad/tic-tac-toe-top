@@ -50,6 +50,8 @@ gameBoard.addEventListener('click', (e) => {
 		e.target.innerText = boardControl.getSymbol();
 		e.target.classList.remove('empty');
 		e.target.classList.add('filled');
+		e.target.style.color = e.target.innerText === gameControl.players[0].playerSymbol ? 'var(--player1-color)' : 'var(--player2-color)';
+		e.target.style.border = e.target.innerText === gameControl.players[0].playerSymbol ? '1.5px dashed var(--player1-color)' : '1.5px dashed var(--player2-color)';
 		boardControl.setGameArray(Number(e.target.getAttribute('gameArray-index')));
 		if (gameControl.getTurns() > 3) {
 			let winner = gameControl.checkWinner().playerName;
