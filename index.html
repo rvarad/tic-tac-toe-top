@@ -11,45 +11,63 @@
 </head>
 
 <body>
-    <div class="header">TIC TAC TOE</div>
+    <div class="header">
+        <h1>TIC-TAC-TOE</h1>
+    </div>
     <div class="mid">
-        <div class="opponent">player1 vs player2</div>
-        <div class="turn">Your turn</div>
+        <div id="opponent"></div>
+        <div id="turn"><span id="player1Turn"></span><span id="player2Turn"></span>'s turn</div>
         <div class="main">
             <div class="player-info" id="player1Info">
                 <form action="#">
-                    <div class="data-input">
-                        <label for="player1NameInput">Player 1 Name</label>
-                        <input type="text" name="player1 name" id="player1NameInput" placeholder="Enter your name" required>
-                    </div>
-                    <div class="data-input">
-                        <label for="player1SymbolInput">Player 1 Symbol</label>
-                        <input type="text" name="player1 symbol" id="player1SymbolInput"
-                            placeholder="Enter your symbol" required>
+                    <div class="data-input player-name">
+                        <h3>Player 1 Name</h3>
+                        <input type="text" name="player1 name" id="player1NameInput" placeholder="Enter your name"
+                            value="" required>
                     </div>
                     <button type="submit" id="player1Submit" class="submit-player">Submit player 1</button>
+                    <div class="data-input player-symbol">
+                        <h3>Player 1 Symbol</h3>
+                        <input type="text" name="player1 symbol" id="player1SymbolInput" placeholder="Enter your symbol"
+                            value="" required>
+                        <div class="player-display-symbol" id="player1DispSymb"></div>
+                    </div>
                 </form>
             </div>
             <button class="start-game" id="startGame">Start Game</button>
-            <div class="game-board"></div>
+            <div class="game">
+                <div class="game-board"></div>
+                <button id="resetButton">Reset Board</button>
+            </div>
             <div class="player-info" id="player2Info">
                 <form action="#">
-                    <div class="data-input">
-                        <label for="player2NameInput">Player 2 Name</label>
-                        <input type="text" name="player2 name" id="player2NameInput" placeholder="Enter your name" required>
-                    </div>
-                    <div class="data-input">
-                        <label for="player2SymbolInput">Player 2 Symbol</label>
-                        <input type="text" name="player2 symbol" id="player2SymbolInput" placeholder="Enter your symbol" required>
+                    <div class="data-input player-name">
+                        <h3>Player 2 Name</h3>
+                        <input type="text" name="player2 name" id="player2NameInput" placeholder="Enter your name"
+                            value="" required>
                     </div>
                     <button type="submit" id="player2Submit" class="submit-player">Submit player 2</button>
+                    <div class="data-input player-symbol">
+                        <h3>Player 2 Symbol</h3>
+                        <input type="text" name="player2 symbol" id="player2SymbolInput" placeholder="Enter your symbol"
+                            value="" required>
+                        <div class="player-display-symbol" id="player2DispSymb"></div>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+    <div id="overlay"></div>
     <div class="modal">
-        <button id="replay"><h1>Play Again</h1></button>
-        <button id="quit"><h1>Quit</h1></button>
+        <h1 id="winner"></h1>
+        <div class="choice-btns">
+            <button id="replay">
+            Play Again
+            </button>
+            <button id="quit">
+            Quit
+            </button>
+        </div>
     </div>
     <div class="footer">
         <span class="credits">
