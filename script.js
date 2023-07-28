@@ -58,7 +58,7 @@ gameBoard.addEventListener('click', (e) => {
 			if (winner) {
 				console.log(winner + ' wins');
 				gameControl.endOfGame(1);
-			} else if ((gameControl.getTurns() === 8) && !winner) {
+			} else if ((gameControl.getTurns() >= 8) && !winner) {
 				gameControl.endOfGame(0);
 			} else {
 				console.log('continue');
@@ -110,7 +110,7 @@ const displayControl = (() => {
 		let player2Turn = document.getElementById('player2Turn');
 		player2Turn.textContent = gameControl.players[1].playerName;
 		turn.style.visibility = 'visible';
-		if (gameControl.currentPlayer() === gameControl.players[0]) {
+		if (gameControl.currentPlayer().playerName === gameControl.players[0].playerName) {
 			player1Turn.style.display = 'inline';
 			player2Turn.style.display = 'none';
 		} else {
@@ -119,7 +119,7 @@ const displayControl = (() => {
 		}
 	};
 	const highlightCurrentPlayer = () => {
-		if (gameControl.currentPlayer() === gameControl.players[0]) {
+		if (gameControl.currentPlayer().playerName === gameControl.players[0].playerName) {
 			document.getElementById('player1Info').style.boxShadow = '0px 0px 10px 10px var(--player1-color)'
 			document.getElementById('player2Info').style.boxShadow = '0px 0px 5px 2px var(--highlight-gray)';
 		} else {
@@ -146,9 +146,15 @@ const displayControl = (() => {
 		document.querySelectorAll('.player-info').forEach(feild => {
 			feild.style.boxShadow = '0px 0px 5px 2px var(--highlight-gray)';
 		});
-		gameControl.players = [];
+		gameControl.players.length = 0;
+		// while (gameControl.players.length > 0) {
+		// 	gameControl.players.pop();
+		// };
+		gameControl.setTurns(0);
 		document.getElementById('opponent').textContent = '';
-		document.getElementById('turn').textContent = '';
+		let turn = document.getElementById('turn');
+		turn.innerHTML = '<span id="player1Turn"></span><span id="player2Turn"></span>\'s turn';
+		turn.style.visibility = 'hidden';
 	};
 	const enableModal = (player) => {
 		overlay.style.display = 'block';
@@ -205,6 +211,7 @@ const boardControl = (() => {
 			cell.textContent = "";
 			cell.classList.add('empty');
 			cell.classList.remove('filled');
+			cell.style.border = '1px dashed var(--highlight-gray)';
 			gameControl.setTurns(0);
 			displayControl.displayCurrentPlayer();
 			displayControl.highlightCurrentPlayer();
@@ -240,8 +247,9 @@ const gameControl = (() => {
 		};
 	};
 	const currentPlayer = () => {
-		return turns % 2 === 0 ? players[0] : players[1]
-	}
+		if (players.length === 0) return;
+		return turns % 2 === 0 ? players[0] : players[1];
+	};
 	const checkWinner = () => {
 		let outcome = (winningSetArray.some((combination) => {
 			return (combination.every((index) => {
